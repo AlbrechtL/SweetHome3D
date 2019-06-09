@@ -1,2 +1,3 @@
 # Ignoring original svn files
 .svn/
+classes/

@@ -866,7 +866,14 @@ public class PlanController extends FurnitureController implements Controller {
   protected boolean isItemPartOfBasePlan(Selectable item) {
     if (item instanceof HomePieceOfFurniture) {
       return isPieceOfFurniturePartOfBasePlan((HomePieceOfFurniture)item);
-    } else {
+    } 
+    else if(item instanceof Label) {
+      return false;
+    }
+    else if (item instanceof Polyline) {
+      return false;
+    }
+    else {
       return !(item instanceof ObserverCamera);
     }
   }

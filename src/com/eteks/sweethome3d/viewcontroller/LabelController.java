@@ -519,7 +519,7 @@ public class LabelController implements Controller {
    * Returns <code>true</code>.
    */
   protected boolean isLabelPartOfBasePlan(Label label) {
-    return true;
+    return false;
   }
 
   /**
