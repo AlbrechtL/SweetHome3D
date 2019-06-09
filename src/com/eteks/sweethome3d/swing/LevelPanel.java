@@ -65,6 +65,7 @@ import com.eteks.sweethome3d.viewcontroller.View;
 public class LevelPanel extends JPanel implements DialogView {
   private final LevelController controller;
   private NullableCheckBox      viewableCheckBox;
+  private NullableCheckBox      lockedCheckBox;
   private JLabel                nameLabel;
   private JTextField            nameTextField;
   private JLabel                elevationLabel;
@@ -117,6 +118,25 @@ public class LevelPanel extends JPanel implements DialogView {
           new PropertyChangeListener() {
               public void propertyChange(PropertyChangeEvent ev) {
                 viewableCheckBox.setValue(controller.getViewable());
+              }
+            });
+    }
+    
+    if (controller.isPropertyEditable(LevelController.Property.LOCKED)) {
+      // Create viewable check box bound to VIEWABLE controller property
+      this.lockedCheckBox = new NullableCheckBox(SwingTools.getLocalizedLabelText(preferences,
+          LevelPanel.class, "lockedCheckBox.text"));
+      this.lockedCheckBox.setNullable(controller.getLocked() == null);
+      this.lockedCheckBox.setValue(controller.getLocked());
+      this.lockedCheckBox.addChangeListener(new ChangeListener() {
+          public void stateChanged(ChangeEvent ev) {
+            controller.setLocked(lockedCheckBox.getValue());
+          }
+        });
+      controller.addPropertyChangeListener(LevelController.Property.LOCKED,
+          new PropertyChangeListener() {
+              public void propertyChange(PropertyChangeEvent ev) {
+                lockedCheckBox.setValue(controller.getLocked());
               }
             });
     }
@@ -396,6 +416,10 @@ public class LevelPanel extends JPanel implements DialogView {
         this.viewableCheckBox.setMnemonic(KeyStroke.getKeyStroke(preferences.getLocalizedString(
             LevelPanel.class, "viewableCheckBox.mnemonic")).getKeyCode());
       }
+      if (this.lockedCheckBox != null) {
+        this.lockedCheckBox.setMnemonic(KeyStroke.getKeyStroke(preferences.getLocalizedString(
+            LevelPanel.class, "lockedCheckBox.mnemonic")).getKeyCode());
+      }
       if (this.nameLabel != null) {
         this.nameLabel.setDisplayedMnemonic(KeyStroke.getKeyStroke(preferences.getLocalizedString(
             LevelPanel.class, "nameLabel.mnemonic")).getKeyCode());
@@ -433,8 +457,14 @@ public class LevelPanel extends JPanel implements DialogView {
     if (this.viewableCheckBox != null) {
       // First row
       add(this.viewableCheckBox, new GridBagConstraints(
-          1, 0, 2, 1, 0, 0, GridBagConstraints.LINE_START,
+          1, 0, 1, 1, 0, 0, GridBagConstraints.LINE_START,
           GridBagConstraints.NONE, new Insets(0, -4, standardGap, 0), 0, 0));
+    }
+    if (this.lockedCheckBox != null) {
+      // First row
+      add(this.lockedCheckBox, new GridBagConstraints(
+          0, 0, 1, 1, 0, 0, labelAlignment,
+          GridBagConstraints.NONE, labelInsets, 0, 0));
     }
     if (this.nameLabel != null) {
       // Second row

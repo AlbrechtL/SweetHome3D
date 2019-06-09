@@ -36,7 +36,7 @@ public class Level extends HomeObject {
    * The properties of a level that may change. <code>PropertyChangeListener</code>s added 
    * to a level will be notified under a property name equal to the string value of one these properties.
    */
-  public enum Property {NAME, ELEVATION, HEIGHT, FLOOR_THICKNESS, BACKGROUND_IMAGE, VISIBLE, VIEWABLE, ELEVATION_INDEX};
+  public enum Property {NAME, ELEVATION, HEIGHT, FLOOR_THICKNESS, BACKGROUND_IMAGE, VISIBLE, VIEWABLE, ELEVATION_INDEX, LOCKED};
       
   private String              name;
   private float               elevation;
@@ -46,6 +46,7 @@ public class Level extends HomeObject {
   private boolean             visible;
   private boolean             viewable;
   private int                 elevationIndex;
+  private boolean             locked;
 
   private transient PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
@@ -65,6 +66,7 @@ public class Level extends HomeObject {
     this.visible = true;
     this.viewable = true;
     this.elevationIndex = -1;
+    this.locked = false;
   }
 
   /**
@@ -76,6 +78,7 @@ public class Level extends HomeObject {
     this.visible = true;
     this.viewable = true;
     this.elevationIndex = -1;
+    this.locked = false;
     in.defaultReadObject();
   }
 
@@ -262,5 +265,25 @@ public class Level extends HomeObject {
     Level clone = (Level)super.clone();
     clone.propertyChangeSupport = new PropertyChangeSupport(clone);
     return clone;
+  }
+
+  /**
+   * Returns <code>true</code> if this level is locked.
+   * @since 5.0
+   */
+  public boolean isLocked() {
+    return this.locked;
+  }
+  
+  /**
+   * Sets whether this level is locked or not. Once this level is updated, 
+   * listeners added to this level will receive a change notification.
+   * @since TBD
+   */
+  public void setLocked(boolean locked) {
+    if (locked != this.locked) {
+      this.locked = locked;
+      this.propertyChangeSupport.firePropertyChange(Property.LOCKED.name(), !locked, locked);
+    }
   }
 }

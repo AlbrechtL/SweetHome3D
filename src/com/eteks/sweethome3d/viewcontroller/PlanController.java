@@ -3509,6 +3509,26 @@ public class PlanController extends FurnitureController implements Controller {
     }
     return levels.toArray(new Level [levels.size()]);
   }
+ 
+  /**
+   * Returns if an item belongs to a locked level
+   */
+  private boolean isItemIsOnLockedLevel(Selectable item) {
+    if (item instanceof HomePieceOfFurniture) {
+      Level furnitureLevel = ((HomePieceOfFurniture)item).getLevel();
+      return furnitureLevel.isLocked();
+    } 
+    else {
+      for (Level level : this.home.getLevels()) {
+        if(item instanceof Elevatable
+            &&((Elevatable)item).isAtLevel(level)
+            && level.isLocked())
+          return true;
+      }    
+    }
+    
+    return false;
+  }
 
   private void setLevelsViewability(Level [] levels, boolean viewable) {
     for (Level level : levels) {
@@ -4134,6 +4154,7 @@ public class PlanController extends FurnitureController implements Controller {
     for (Label label : this.home.getLabels()) {
       if ((!basePlanLocked
             || !isItemPartOfBasePlan(label))
+          && !isItemIsOnLockedLevel(label)
           && isLevelNullOrViewable(label.getLevel())
           && label.isAtLevel(selectedLevel)
           && (label.containsPoint(x, y, margin)
@@ -4149,6 +4170,7 @@ public class PlanController extends FurnitureController implements Controller {
     for (DimensionLine dimensionLine : this.home.getDimensionLines()) {
       if ((!basePlanLocked
             || !isItemPartOfBasePlan(dimensionLine))
+          && !isItemIsOnLockedLevel(dimensionLine)
           && isLevelNullOrViewable(dimensionLine.getLevel())
           && dimensionLine.isAtLevel(selectedLevel)
           && dimensionLine.containsPoint(x, y, margin)) {
@@ -4165,6 +4187,7 @@ public class PlanController extends FurnitureController implements Controller {
       Polyline polyline = polylines.get(i);
       if ((!basePlanLocked
             || !isItemPartOfBasePlan(polyline))
+          && !isItemIsOnLockedLevel(polyline)
           && isLevelNullOrViewable(polyline.getLevel())
           && polyline.isAtLevel(selectedLevel)
           && polyline.containsPoint(x, y, margin)) {
@@ -4184,6 +4207,7 @@ public class PlanController extends FurnitureController implements Controller {
       HomePieceOfFurniture piece = furniture.get(i);
       if ((!basePlanLocked
             || !isItemPartOfBasePlan(piece))
+          && !isItemIsOnLockedLevel(piece)
           && isPieceOfFurnitureVisibleAtSelectedLevel(piece)) {
         if (piece.containsPoint(x, y, margin)) {
           foundFurniture.add(piece);
@@ -4212,6 +4236,7 @@ public class PlanController extends FurnitureController implements Controller {
         if (item instanceof HomePieceOfFurniture) {
           HomePieceOfFurniture piece = (HomePieceOfFurniture)item;
           if (!isItemPartOfBasePlan(piece)
+              && !isItemIsOnLockedLevel(piece)
               && isPieceOfFurnitureVisibleAtSelectedLevel(piece)
               && (piece.containsPoint(x, y, margin)
                   || piece.getName() != null
@@ -4363,6 +4388,7 @@ public class PlanController extends FurnitureController implements Controller {
     for (Selectable item : getVisibleItemsAtSelectedLevel()) {
       if ((!basePlanLocked
             || !isItemPartOfBasePlan(item))
+          && !isItemIsOnLockedLevel(item)
           && item.intersectsRectangle(x0, y0, x1, y1)) {
         items.add(item);
       }
