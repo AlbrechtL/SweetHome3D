@@ -4081,7 +4081,8 @@ public class HomePane extends JRootPane implements HomeView {
    */
   private String getAboutMessage() {
     String messageFormat = this.preferences.getLocalizedString(HomePane.class, "about.message");
-    String aboutVersion = this.controller.getVersion();
+//    String aboutVersion = this.controller.getVersion();
+    String aboutVersion = "based on 6.1.2 modified by AlbrechtL (albrechtloh@gmx.de)";
     String javaVersion = System.getProperty("java.version");
     String dataModel = System.getProperty("sun.arch.data.model");
     if (dataModel != null) {
