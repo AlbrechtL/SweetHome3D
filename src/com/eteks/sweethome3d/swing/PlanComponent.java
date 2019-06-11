@@ -2858,6 +2858,14 @@ public class PlanComponent extends JComponent implements PlanView, Scrollable, P
               return Float.compare(piece1.getGroundElevation(), piece2.getGroundElevation());
             }
           });
+      
+      // Draw higher levels items always on top
+      Collections.sort(this.sortedLevelFurniture,
+          new Comparator<HomePieceOfFurniture>() {
+            public int compare(HomePieceOfFurniture piece1, HomePieceOfFurniture piece2) {
+              return Float.compare(piece1.getLevel().getElevationIndex(), piece2.getLevel().getElevationIndex());
+            }
+          });
     }
 
     Color selectionColor = getSelectionColor();
